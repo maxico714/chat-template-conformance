@@ -1,0 +1,9 @@
+{
+  "id": "echo-example",
+  "description": "Shows the command-engine protocol with a trivial external renderer",
+  "messages": [{"role": "user", "content": "hi"}],
+  "template": "{{ messages[0]['content'] }}",
+  "expected": {
+    "echo": {"text": "hi"}
+  }
+}

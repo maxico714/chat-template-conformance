@@ -1,0 +1,27 @@
+{
+  "id": "005-tools-block",
+  "description": "Template that renders a tools block before the conversation",
+  "messages": [
+    {"role": "user", "content": "weather?"}
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_weather",
+        "description": "Look up the weather for a city",
+        "parameters": {
+          "type": "object",
+          "properties": {"city": {"type": "string"}},
+          "required": ["city"]
+        }
+      }
+    }
+  ],
+  "template": "{% for tool in tools %}<tool>{{ tool['function']['name'] }}</tool>{% endfor %}{% for message in messages %}{{ message['role'] }}: {{ message['content'] }}\n{% endfor %}",
+  "expected": {
+    "reference": {"text": "<tool>get_weather</tool>user: weather?\n"}
+  },
+  "env": {"jinja2": "3.1.6"},
+  "source": {"note": "hand-derived from the template; tool definitions as template context"}
+}

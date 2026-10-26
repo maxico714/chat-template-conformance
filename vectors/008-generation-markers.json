@@ -1,0 +1,13 @@
+{
+  "id": "008-generation-markers",
+  "description": "Template with {% generation %} markers, which only Transformers understands",
+  "messages": [
+    {"role": "assistant", "content": "hello"}
+  ],
+  "template": "{% for message in messages %}<|im_start|>{{ message['role'] }}\n{% generation %}{{ message['content'] }}{% endgeneration %}<|im_end|>\n{% endfor %}",
+  "expected": {
+    "reference": {"text": "<|im_start|>assistant\nhello<|im_end|>\n"}
+  },
+  "env": {"jinja2": "3.1.6"},
+  "source": {"note": "markers are dropped before rendering; visible output must be unchanged"}
+}

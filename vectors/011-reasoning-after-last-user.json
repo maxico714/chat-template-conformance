@@ -1,0 +1,19 @@
+{
+  "id": "011-reasoning-after-last-user",
+  "description": "Pattern-inspired by llama.cpp#13404: only the assistant turn after the last user message gets reasoning markers",
+  "messages": [
+    {"role": "user", "content": "q1"},
+    {"role": "assistant", "content": "a1"},
+    {"role": "user", "content": "q2"},
+    {"role": "assistant", "content": "a2"}
+  ],
+  "template": "{% set ns = namespace(last_user=-1) %}{% for message in messages %}{% if message['role'] == 'user' %}{% set ns.last_user = loop.index0 %}{% endif %}{% endfor %}{% for message in messages %}{% if message['role'] == 'assistant' and loop.index0 > ns.last_user %}reasoning{% else %}final{% endif %}:{{ loop.index0 }};{% endfor %}",
+  "expected": {
+    "reference": {"text": "final:0;final:1;final:2;reasoning:3;"}
+  },
+  "env": {"jinja2": "3.1.6"},
+  "source": {
+    "issue": "https://github.com/ggml-org/llama.cpp/issues/13404",
+    "note": "pattern-inspired regression, not a byte-level reproduction of the reported output"
+  }
+}

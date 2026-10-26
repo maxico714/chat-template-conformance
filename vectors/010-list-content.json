@@ -1,0 +1,19 @@
+{
+  "id": "010-list-content",
+  "description": "Structured content parts rendered with a separator",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {"type": "text", "text": "first"},
+        {"type": "text", "text": "second"}
+      ]
+    }
+  ],
+  "template": "{% for part in messages[0]['content'] %}{{ part['text'] }}{% if not loop.last %} {% endif %}{% endfor %}",
+  "expected": {
+    "reference": {"text": "first second"}
+  },
+  "env": {"jinja2": "3.1.6"},
+  "source": {"note": "hand-derived from the template; content may be a list of parts"}
+}

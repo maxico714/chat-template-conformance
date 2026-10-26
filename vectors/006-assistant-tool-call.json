@@ -1,0 +1,27 @@
+{
+  "id": "006-assistant-tool-call",
+  "description": "Assistant message with null content and a tool call rendered by the template",
+  "messages": [
+    {"role": "user", "content": "What's the weather in Paris?"},
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_1",
+          "type": "function",
+          "function": {
+            "name": "get_weather",
+            "arguments": "{\"city\": \"Paris\"}"
+          }
+        }
+      ]
+    }
+  ],
+  "template": "{% for message in messages %}<|im_start|>{{ message['role'] }}\n{% if message['content'] is not none %}{{ message['content'] }}{% endif %}{% for call in message['tool_calls'] | default([]) %}<|tool_call|>{{ call['function']['name'] }}({{ call['function']['arguments'] }}){% endfor %}<|im_end|>\n{% endfor %}",
+  "expected": {
+    "reference": {"text": "<|im_start|>user\nWhat's the weather in Paris?<|im_end|>\n<|im_start|>assistant\n<|tool_call|>get_weather({\"city\": \"Paris\"})<|im_end|>\n"}
+  },
+  "env": {"jinja2": "3.1.6"},
+  "source": {"note": "hand-derived from the template; null content must not render as 'None'"}
+}

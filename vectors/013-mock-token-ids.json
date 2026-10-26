@@ -1,0 +1,14 @@
+{
+  "id": "013-mock-token-ids",
+  "description": "Token-level expectation for the deterministic mock adapter",
+  "messages": [
+    {"role": "user", "content": "hi"}
+  ],
+  "template": "{{ messages[0]['content'] }}",
+  "expected": {
+    "reference": {"text": "hi"},
+    "mock": {"text": "hi", "token_ids": [1104, 1105]}
+  },
+  "env": {"jinja2": "3.1.6"},
+  "source": {"note": "mock token ids are hand-computed as 1000 + each UTF-8 byte of the rendered text"}
+}

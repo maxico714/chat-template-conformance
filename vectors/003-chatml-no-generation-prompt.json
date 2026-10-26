@@ -1,0 +1,13 @@
+{
+  "id": "003-chatml-no-generation-prompt",
+  "description": "Same ChatML template with add_generation_prompt disabled",
+  "messages": [
+    {"role": "user", "content": "hi"}
+  ],
+  "template": "{% for message in messages %}<|im_start|>{{ message['role'] }}\n{{ message['content'] }}<|im_end|>\n{% endfor %}{% if add_generation_prompt %}<|im_start|>assistant\n{% endif %}",
+  "expected": {
+    "reference": {"text": "<|im_start|>user\nhi<|im_end|>\n"}
+  },
+  "env": {"jinja2": "3.1.6"},
+  "source": {"note": "hand-derived from the template; conditional branch omitted"}
+}

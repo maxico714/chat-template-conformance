@@ -1,0 +1,13 @@
+{
+  "id": "009-unicode-content",
+  "description": "Non-ASCII content must pass through byte-for-byte",
+  "messages": [
+    {"role": "user", "content": "héllo 世界 🙂"}
+  ],
+  "template": "{{ messages[0]['content'] }}",
+  "expected": {
+    "reference": {"text": "héllo 世界 🙂"}
+  },
+  "env": {"jinja2": "3.1.6"},
+  "source": {"note": "hand-derived; guards against encoding regressions"}
+}

@@ -1,0 +1,16 @@
+{
+  "id": "004-llama3-style-bos",
+  "description": "Llama-3-shaped header template that requires a bos_token supplied by the vector",
+  "messages": [
+    {"role": "user", "content": "hi"}
+  ],
+  "template": "{{ bos_token }}{% for message in messages %}<|start_header_id|>{{ message['role'] }}<|end_header_id|>\n\n{{ message['content'] }}<|eot_id|>{% endfor %}{% if add_generation_prompt %}<|start_header_id|>assistant<|end_header_id|>\n\n{% endif %}",
+  "bos_token": "<|begin_of_text|>",
+  "eos_token": "<|end_of_text|>",
+  "options": {"add_generation_prompt": true},
+  "expected": {
+    "reference": {"text": "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nhi<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"}
+  },
+  "env": {"jinja2": "3.1.6"},
+  "source": {"note": "hand-derived from the template; bos_token is a template variable, not a table"}
+}

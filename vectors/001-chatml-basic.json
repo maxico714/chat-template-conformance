@@ -1,0 +1,14 @@
+{
+  "id": "001-chatml-basic",
+  "description": "ChatML-shaped single user turn with a generation prompt",
+  "messages": [
+    {"role": "user", "content": "hi"}
+  ],
+  "template": "{% for message in messages %}<|im_start|>{{ message['role'] }}\n{{ message['content'] }}<|im_end|>\n{% endfor %}{% if add_generation_prompt %}<|im_start|>assistant\n{% endif %}",
+  "options": {"add_generation_prompt": true},
+  "expected": {
+    "reference": {"text": "<|im_start|>user\nhi<|im_end|>\n<|im_start|>assistant\n"}
+  },
+  "env": {"jinja2": "3.1.6"},
+  "source": {"note": "hand-derived from the template; ChatML-shaped markers"}
+}
