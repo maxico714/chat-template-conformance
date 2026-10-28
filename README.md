@@ -46,6 +46,10 @@ engines available in this process; it makes no network calls.
 
 ## Quickstart
 
+The seed vectors are conformance fixtures, not runtime package data. They are
+included in the GitHub source and source distribution, but not inside the
+wheel; from another directory, pass your own vector directory.
+
 ```bash
 ctp validate-dir vectors
 ```
