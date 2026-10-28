@@ -59,7 +59,7 @@ reaches production.
 - Exact text and token-ID diffs; JSON report; SARIF 2.1.0 (`CTP001`, `CTP002`).
 - Exit codes 0/1/2/3/4 with documented precedence.
 - Environment fingerprint warnings (Jinja2 exact, Python major.minor).
-- 13 seed vectors and 150 tests, including adversarial and mutation checks.
+- 13 seed vectors and 155 tests, including adversarial and mutation checks.
 
 **Deliberately deferred**
 

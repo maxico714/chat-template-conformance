@@ -49,7 +49,13 @@ def test_mock_is_deterministic_and_utf8_based() -> None:
 
 @pytest.mark.parametrize(
     "kwargs",
-    [{"exe": ""}, {"exe": "python", "timeout": 0}, {"exe": "python", "timeout": -1}],
+    [
+        {"exe": ""},
+        {"exe": "python", "timeout": 0},
+        {"exe": "python", "timeout": -1},
+        {"exe": "python", "timeout": float("nan")},
+        {"exe": "python", "timeout": float("inf")},
+    ],
 )
 def test_command_config_rejects_invalid_values(kwargs: Mapping[str, Any]) -> None:
     with pytest.raises(ConfigError):

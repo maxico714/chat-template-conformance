@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import stat
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, NoReturn
@@ -263,18 +264,32 @@ def parse_vector(data: object, *, path: Path | None = None) -> Vector:
 def load_vector(path: str | Path) -> Vector:
     target = Path(path)
     try:
-        size = target.stat().st_size
+        info = target.stat()
     except FileNotFoundError:
         raise VectorError("vector file does not exist", str(target)) from None
     except OSError as exc:
         raise VectorError(str(exc), str(target)) from None
-    if size > MAX_VECTOR_BYTES:
-        raise VectorError(f"vector file is {size} bytes (max {MAX_VECTOR_BYTES})", str(target))
+    if not stat.S_ISREG(info.st_mode):
+        raise VectorError("vector path is not a regular file", str(target))
+    if info.st_size > MAX_VECTOR_BYTES:
+        raise VectorError(
+            f"vector file is {info.st_size} bytes (max {MAX_VECTOR_BYTES})", str(target)
+        )
     try:
-        raw = target.read_text(encoding="utf-8")
+        with target.open("rb") as handle:
+            raw_bytes = handle.read(MAX_VECTOR_BYTES + 1)
     except FileNotFoundError:
         raise VectorError("vector file does not exist", str(target)) from None
-    except (OSError, UnicodeDecodeError) as exc:
+    except OSError as exc:
+        raise VectorError(str(exc), str(target)) from None
+    if len(raw_bytes) > MAX_VECTOR_BYTES:
+        raise VectorError(
+            f"vector file exceeds {MAX_VECTOR_BYTES} bytes (size changed while reading)",
+            str(target),
+        )
+    try:
+        raw = raw_bytes.decode("utf-8")
+    except UnicodeDecodeError as exc:
         raise VectorError(str(exc), str(target)) from None
     try:
         data = json.loads(raw)

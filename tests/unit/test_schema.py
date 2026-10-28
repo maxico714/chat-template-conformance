@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -12,6 +13,7 @@ from ctp.schema import (
     MAX_MESSAGES,
     MAX_TEMPLATE_CHARS,
     MAX_TOKEN_IDS,
+    MAX_VECTOR_BYTES,
     VectorError,
     load_vector,
     parse_vector,
@@ -196,3 +198,41 @@ def test_load_vector_rejects_oversized_file(tmp_path: Path) -> None:
     with pytest.raises(VectorError) as excinfo:
         load_vector(path)
     assert "max" in excinfo.value.detail
+
+
+def test_load_vector_rejects_a_directory(tmp_path: Path) -> None:
+    with pytest.raises(VectorError) as excinfo:
+        load_vector(tmp_path)
+    assert "not a regular file" in excinfo.value.detail
+
+
+def test_size_cap_is_enforced_while_reading(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "growing.json"
+    path.write_bytes(b" " * (MAX_VECTOR_BYTES + 1))
+    real_stat = Path.stat
+
+    def small_stat(self: Path, *args: object, **kwargs: object) -> os.stat_result:
+        info = real_stat(self, *args, **kwargs)  # type: ignore[arg-type]
+        if self == path:
+            return os.stat_result(
+                (
+                    info.st_mode,
+                    info.st_ino,
+                    info.st_dev,
+                    info.st_nlink,
+                    info.st_uid,
+                    info.st_gid,
+                    1,
+                    info.st_atime,
+                    info.st_mtime,
+                    info.st_ctime,
+                )
+            )
+        return info
+
+    monkeypatch.setattr(Path, "stat", small_stat)
+    with pytest.raises(VectorError) as excinfo:
+        load_vector(path)
+    assert "exceeds" in excinfo.value.detail

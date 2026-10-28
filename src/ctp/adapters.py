@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import platform
 import subprocess
 from dataclasses import dataclass
@@ -54,8 +55,8 @@ class CommandConfig:
     def __post_init__(self) -> None:
         if not self.exe:
             raise ConfigError("command executable must not be empty")
-        if self.timeout <= 0:
-            raise ConfigError("command timeout must be positive")
+        if not math.isfinite(self.timeout) or self.timeout <= 0:
+            raise ConfigError("command timeout must be positive and finite")
 
 
 def reference(vector: Vector) -> RenderResult:

@@ -22,7 +22,8 @@ shows the command that was run and its real result on the build host
 - [x] `ruff check .` → `All checks passed!`
 - [x] `ruff format --check .` → all files formatted
 - [x] `mypy src` → `Success: no issues found in 8 source files`
-- [x] `python -m pytest --collect-only -q` → collection succeeds; full run 150 passed
+- [x] `python -m pytest --collect-only -q` → collection succeeds; full run 155 passed
+      (150 at first release; five release-QA regression tests added).
 
 ## Gate 2 — L1 units (schema + adapters)
 
@@ -93,10 +94,11 @@ shows the command that was run and its real result on the build host
 ## Gate 7 — L4 clean environment
 
 - [x] Fresh copy without caches or virtualenv → `python -m venv` → `pip install -e
-      ".[dev]"` → `ruff`, `mypy`, `150 passed`.
+      ".[dev]"` → `ruff`, `mypy`, `155 passed`.
 - [x] Wheel and sdist build (`python -m build`), `twine check` passes.
-- [x] Wheel installs into an empty virtualenv; `ctp doctor`, `ctp validate-dir vectors` and
-      the example adapter run from the installed package.
+- [x] Wheel installs into an empty virtualenv; `ctp doctor` and the example adapter run
+      from the installed package, and `ctp validate-dir vectors` runs against the
+      checkout. The vectors are repository fixtures and are not packaged in the wheel.
 
 ## Gate 8 — Naming and packaging (G3-gated)
 

@@ -6,6 +6,14 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Vector files must be regular files. Directories, devices, and pipes are rejected with
+  `E_SCHEMA` instead of being read, and the 2 MB cap is enforced while reading as well
+  as from `stat`.
+- `--timeout` rejects non-finite values. `nan` and `inf` no longer silently disable the
+  command-engine timeout.
+
 ## [0.1.0] - 2026-10-26
 
 ### Added
